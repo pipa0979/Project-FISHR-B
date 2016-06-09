@@ -44,6 +44,6 @@ return 0;
 
 void exitprogram(std::string status)
 {
-	std::cerr<<"Program is exiting with status: "<<status<<std::endl;
+	std::cout<<"Program is exiting with status: "<<status<<std::endl;
 	exit(0);
 }
