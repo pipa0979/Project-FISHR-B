@@ -41,7 +41,7 @@ int HandleFlags::setFlagValues(int argc,char *argv[]){
 					}
 				else
 					{
-						std::cout<<"Wrong parameter encountered:\t"<<argv[i]<<std::endl;
+						std::cerr<<"Wrong parameter encountered:\t"<<argv[i]<<std::endl;
 						return 1;
 					}
 			}

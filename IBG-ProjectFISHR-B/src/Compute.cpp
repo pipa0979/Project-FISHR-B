@@ -120,7 +120,7 @@ void Compute::firstpass(std::string ibdfilename,std::string bmidfilename)
 	std::ofstream fibdfile_modified(ibdfilename_modified.c_str());
 	if (!fibdfile_modified.is_open())
 		{
-			std::cout<<"File Error: Cannot create "<<(ibdfilename+"_modified")<<std::endl;
+			std::cerr<<"File Error: Cannot create "<<(ibdfilename+"_modified")<<std::endl;
 			exit(0);
 		}
 	std::string lineibd;
