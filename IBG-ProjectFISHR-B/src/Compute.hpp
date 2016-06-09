@@ -44,7 +44,7 @@ public:
 	void compute_ma_ie(unsigned long long,unsigned long long,unsigned long long,int,unsigned long long,std::string,std::string);
 	void compute_ma_nm(unsigned long long,unsigned long long,unsigned long long,int,unsigned long long,std::string,std::string);
 	void compute_ma_het(unsigned long long,unsigned long long,unsigned long long,int,unsigned long long,std::string );
-	void convertIBDtovec();
+	void convertIBDtovec(std::string);
 	void convertBmidtovec();
 	void convertPedtovec();
 

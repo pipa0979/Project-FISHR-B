@@ -23,14 +23,14 @@ Compute::Compute(HandleFlags hf,ReadFiles rf)
 	fpedfile.open(hf.getpedfilename().c_str());	//connect pedfile to filestream
 	fbmidfile.open(hf.getbmidfilename().c_str());	//connect bmidfile to file stream
 	fibdfile.open(hf.getibdfilename().c_str());	//connect ibdfile to file stream
-	foutfile.open(((hf.getpedfilename())+".out.txt").c_str());	//connect	output filename to the file stream. Close this later in thhe firstpass function and repoen with the modified ibd file.
+	foutfile.open(hf.getoutputfilename().c_str());	//connect	output filename to the file stream. Close this later in thhe firstpass function and repoen with the modified ibd file.
 	start = stop = 0;	//	initializing the start and stop to 0
 	ind1.clear();	// clear all data from vector type  for ind1
 	ind2.clear();	// clear all data from vector type  for ind1
 
 	firstpass(hf.getibdfilename(),hf.getbmidfilename());	//create a new IBDfile with the length of chromosome to be matched.
 
-	convertIBDtovec();
+	convertIBDtovec(hf.getibdfilename());
 	convertBmidtovec();
 	convertPedtovec();
 	//std::cout<<hf.getwindowsize()<<std::endl;
@@ -38,7 +38,7 @@ Compute::Compute(HandleFlags hf,ReadFiles rf)
 
 }
 
-void Compute::convertIBDtovec()
+void Compute::convertIBDtovec(std::string ibdfn)
 {
 	std::cout<<"Converting IBD to Vector"<<std::endl;
 	std::string line;
@@ -58,6 +58,11 @@ void Compute::convertIBDtovec()
 		}
 
 	fibdfile.close();
+
+	if (remove((ibdfn+"_modified").c_str())!=0)
+	{
+
+	}
 
 	//std::cout<<IBD.size()<<std::endl;
 
@@ -137,6 +142,10 @@ void Compute::firstpass(std::string ibdfilename,std::string bmidfilename)
 		{
 			//std::cout<<lineibd[lineibd.length()-2]<<std::endl;
 			ssibd<<lineibd;
+			//std::cout<<lineibd<<std::endl;
+			//std::cout<<lineibd[lineibd.length()]<<std::endl;
+
+
 			lineibd.erase(lineibd.length()-1);	//getrid of the newline character
 
 			fibdfile_modified<<lineibd<<"\t";

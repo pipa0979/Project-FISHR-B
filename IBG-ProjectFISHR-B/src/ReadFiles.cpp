@@ -18,7 +18,7 @@ ReadFiles::ReadFiles()
 }
 
 int ReadFiles::readpedfile(const std::string pedfilename){
-	if (!boost::ends_with(pedfilename, ".ped.txt")) {
+	if (!boost::ends_with(pedfilename, ".ped")) {
 		std::cerr<<"pedfile read error:\t"<<pedfilename<<std::endl;
 		return 1;
 	}
@@ -34,7 +34,7 @@ int ReadFiles::readpedfile(const std::string pedfilename){
 
 
 int ReadFiles::readibdfile(const std::string ibdfilename){
-	if (!boost::ends_with(ibdfilename, ".ibd.txt")) {
+	if (!boost::ends_with(ibdfilename, ".ibd")) {
 		std::cerr<<"ibdfile read error:\t"<<ibdfilename<<std::endl;
 		return 1;
 	}
@@ -49,7 +49,7 @@ int ReadFiles::readibdfile(const std::string ibdfilename){
 }
 
 int ReadFiles::readbmidfile(const std::string bmidfilename){
-	if (!boost::ends_with(bmidfilename, ".bmid.txt")) {
+	if (!boost::ends_with(bmidfilename, ".bmid")) {
 		std::cerr<<"bmidfilename read error:\t"<<bmidfilename<<std::endl;
 
 		return 1;

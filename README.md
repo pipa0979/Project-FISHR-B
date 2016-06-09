@@ -1,3 +1,3 @@
 # Project-FISHR-B
 
--ped ./src/FISHRB_Test1.ped.txt -bmid ./src/FISHRB_Test1.bmid.txt -ibd ./src/FISHRB_Test1.ibd.txt -window 5
+-ped ./src/FISHRB_Test1.ped -bmid ./src/FISHRB_Test1.bmid -ibd ./src/FISHRB_Test1.ibd -window 5 -out testoutput
