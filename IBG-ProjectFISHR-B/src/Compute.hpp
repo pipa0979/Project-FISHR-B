@@ -41,11 +41,9 @@ public:
 	Compute(HandleFlags,ReadFiles);
 	void firstpass(std::string,std::string);
 	void calculate(HandleFlags,ReadFiles);
-	void compute_pie();
-	void compute_ma_ie();
-	void compute_ma_nm();
-	void compute_ma_het1(unsigned long long,unsigned long long,unsigned long long,int,unsigned long long );
-	void compute_ma_het2();
+	void compute_ma_ie(unsigned long long,unsigned long long,unsigned long long,int,unsigned long long,std::string,std::string);
+	void compute_ma_nm(unsigned long long,unsigned long long,unsigned long long,int,unsigned long long,std::string,std::string);
+	void compute_ma_het(unsigned long long,unsigned long long,unsigned long long,int,unsigned long long,std::string );
 	void convertIBDtovec();
 	void convertBmidtovec();
 	void convertPedtovec();
