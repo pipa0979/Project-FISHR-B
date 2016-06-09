@@ -102,9 +102,9 @@ void Compute::convertPedtovec()
 	while(getline(fpedfile,line))
 		{
 			ss<<line;
-			ss>>populate.individual;
+			ss>>populate.individual>>populate.individual;
 			individual = populate.individual;
-			ss>>populate.individual>>populate.individual>>populate.individual>>populate.individual>>populate.individual;
+			ss>>populate.individual>>populate.individual>>populate.individual>>populate.individual;
 			getline(ss,dnaseq,'\n');
 			dnaseq.erase(			std::remove(dnaseq.begin(), dnaseq.end(), '\t'), dnaseq.end()		);	//Debunk this
 			PED.push_back(Ped(individual,dnaseq));
