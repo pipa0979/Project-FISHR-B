@@ -607,6 +607,7 @@ void Compute::compute_ma_het(unsigned long long index,unsigned long long st,unsi
 
 void Compute::calculate(HandleFlags hf,ReadFiles rf)
 {
+	std::cout<<"Computing..."<<std::endl;
 	unsigned long long atmostdnalength = (PED[0].dnasequence.length() - 1)/2;	//Length of the dna sequence
 	for (unsigned long long i = 0; i< IBD.size();i++ )
 		{
@@ -638,8 +639,12 @@ void Compute::calculate(HandleFlags hf,ReadFiles rf)
 			compute_ma_nm(i,st,en,hf.getwindowsize(),atmostdnalength,IBD[i].person1,IBD[i].person2);	//compute ma_nm
 			//compute_ma_ie(i,st,en,hf.getwindowsize(),atmostdnalength,IBD[i].person1,IBD[i].person2);
 			foutfile.flush();
-
 			foutfile<<"\n";
+			std::cout<<"\rPercentage completed:\t"<<	i/double(IBD.size());
+			std::cout.flush();
+			
+
+			
 
 		}
 	foutfile.close();
