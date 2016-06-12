@@ -609,7 +609,7 @@ void Compute::calculate(HandleFlags hf,ReadFiles rf)
 {
 	std::cout<<"Computing..."<<std::endl;
 	unsigned long long atmostdnalength = (PED[0].dnasequence.length() - 1)/2;	//Length of the dna sequence
-	unsigned long long i = 0
+	unsigned long long i = 0;
 	for (i = 0; i< IBD.size();i++ )
 		{
 			unsigned long long error = 0;	//	hold calculated error value
