@@ -182,7 +182,7 @@ void Compute::firstpass(std::string ibdfilename,std::string bmidfilename)
 	fibdfile.close();
 	fibdfile_modified.close();
 	fibdfile.open(ibdfilename_modified.c_str());	//Connected the new modified ibd file with 5 columns to the file pointer
-	std::cout<<"exiting"<<std::endl;
+	//std::cout<<"exiting"<<std::endl;
 
 }
 
