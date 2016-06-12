@@ -609,7 +609,8 @@ void Compute::calculate(HandleFlags hf,ReadFiles rf)
 {
 	std::cout<<"Computing..."<<std::endl;
 	unsigned long long atmostdnalength = (PED[0].dnasequence.length() - 1)/2;	//Length of the dna sequence
-	for (unsigned long long i = 0; i< IBD.size();i++ )
+	unsigned long long i = 0
+	for (i = 0; i< IBD.size();i++ )
 		{
 			unsigned long long error = 0;	//	hold calculated error value
 			foutfile<<IBD[i].person1<<"\t"<<IBD[i].person2<<"\t"<<IBD[i].begin<<"\t"<<IBD[i].end<<"\t";	//	First 4 columns
@@ -642,11 +643,9 @@ void Compute::calculate(HandleFlags hf,ReadFiles rf)
 			foutfile<<"\n";
 			std::cout<<"\rPercentage completed:\t"<<	i/double(IBD.size());
 			std::cout.flush();
-			
-
-			
-
 		}
+	std::cout<<"\rPercentage completed:\t"<<	i/double(IBD.size());	
 	foutfile.close();
+	std::cout<<"Execution completed."<<std::endl;
 
 }
