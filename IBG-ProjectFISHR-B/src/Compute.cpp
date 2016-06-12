@@ -641,10 +641,10 @@ void Compute::calculate(HandleFlags hf,ReadFiles rf)
 			//compute_ma_ie(i,st,en,hf.getwindowsize(),atmostdnalength,IBD[i].person1,IBD[i].person2);
 			foutfile.flush();
 			foutfile<<"\n";
-			std::cout<<"\rPercentage completed:\t"<<	i/double(IBD.size());
+			std::cout<<"\rPercentage completed:\t"<<	(i/double(IBD.size()))*(100.0) ;
 			std::cout.flush();
 		}
-	std::cout<<"\rPercentage completed:\t"<<	i/double(IBD.size());	
+	std::cout<<"\rPercentage completed:\t"<<	(i/double(IBD.size()))*(100.0)<<std::endl;	
 	foutfile.close();
 	std::cout<<"Execution completed."<<std::endl;
 
