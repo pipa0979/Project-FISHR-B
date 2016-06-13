@@ -57,12 +57,29 @@ void Compute::convertIBDtovec(std::string ibdfn)
 			ss.clear();
 		}
 
+/*
+	for (int i =0;i<IBD.size();i++)
+	{
+		std::cout<<IBD[i].end<<std::endl;
+	}
+*/
+
 	fibdfile.close();
 
 	if (remove((ibdfn+"_modified").c_str())!=0)
 	{
 
 	}
+	//std::cout<<IBD.size()<<std::endl;
+
+	/*for (unsigned long long i = 0;i<IBD.size();i++)
+	{
+		std::cout<<IBD[i].<<std::endl;
+		std::cout<<IBD[i].dnasequence<<std::endl;
+
+	}*/
+
+
 
 	//std::cout<<IBD.size()<<std::endl;
 
@@ -94,6 +111,8 @@ void Compute::convertBmidtovec()
 	std::cout<<BMID[12].lencm<<std::endl;
 	std::cout<<BMID[12].location<<std::endl;
 	 */
+
+
 }
 void Compute::convertPedtovec()
 {
@@ -116,6 +135,21 @@ void Compute::convertPedtovec()
 			ss.str("");
 			ss.clear();
 		}
+
+
+/*
+	std::cout<<PED.size()<<std::endl;
+
+	for (unsigned long long i = 0;i<PED.size();i++)
+	{
+		std::cout<<PED[i].individual<<std::endl;
+		std::cout<<PED[i].dnasequence<<std::endl;
+
+	}
+
+*/
+
+
 	fpedfile.close();
 }
 void Compute::firstpass(std::string ibdfilename,std::string bmidfilename)
@@ -138,18 +172,18 @@ void Compute::firstpass(std::string ibdfilename,std::string bmidfilename)
 	unsigned long long placeholderStopibd;
 	unsigned long long placeholderIndexbmid;
 
-	while(getline(fibdfile,lineibd,'\n'))	//The last loine of ibd file is chopped up because of a missing /n fix that
+	while(getline(fibdfile,lineibd))	//The last line of IBD file is chopped up because of a missing \n fix that
 		{
-			//std::cout<<lineibd[lineibd.length()-2]<<std::endl;
-			ssibd<<lineibd;
+
 			//std::cout<<lineibd<<std::endl;
-			//std::cout<<lineibd[lineibd.length()]<<std::endl;
+			ssibd<<lineibd;
+			//lineibd.erase(lineibd.length()-1);	//getrid of the newline character
 
-
-			lineibd.erase(lineibd.length()-1);	//getrid of the newline character
+			//std::cout<<linebmid<<std::endl;
 
 			fibdfile_modified<<lineibd<<"\t";
-			fibdfile_modified.flush();	//flush the stream buffer to outputfile.
+
+			//fibdfile_modified.flush();	//flush the stream buffer to outputfile.
 
 			ssibd>>placeholderstringibd>>placeholderstringibd;	//Just to escape the first 2 values in the stringstream
 			ssibd>>placeholderStartibd>>placeholderStopibd;
@@ -183,7 +217,7 @@ void Compute::firstpass(std::string ibdfilename,std::string bmidfilename)
 	fibdfile_modified.close();
 	fibdfile.open(ibdfilename_modified.c_str());	//Connected the new modified ibd file with 5 columns to the file pointer
 	//std::cout<<"exiting"<<std::endl;
-
+	//exit(0);
 }
 
 
@@ -508,6 +542,7 @@ void Compute::compute_ma_het(unsigned long long index,unsigned long long st,unsi
 
 	for (unsigned long long i=0;i< PED.size();i++ )
 		{
+
 			if (strcmp(PED[i].individual.c_str(), tofind.c_str()) == 0)
 				{
 					//std::cout<<PED[i].dnasequence<<std::endl;
@@ -612,14 +647,15 @@ void Compute::calculate(HandleFlags hf,ReadFiles rf)
 	unsigned long long i = 0;
 	for (i = 0; i< IBD.size();i++ )
 		{
-			unsigned long long error = 0;	//	hold calculated error value
+			//std::cout<<i<<std::endl;
+			//unsigned long long error = 0;	//	hold calculated error value
 			foutfile<<IBD[i].person1<<"\t"<<IBD[i].person2<<"\t"<<IBD[i].begin<<"\t"<<IBD[i].end<<"\t";	//	First 4 columns
-
-
 			unsigned long long st,en;
 			st = en = 0;
 			for (unsigned long long j = 0 ; j < BMID.size(); j++  )
 				{
+					//std::cout<<BMID[j].location<<"\t"<<IBD[i].begin<<"\t"<<IBD[i].end<<std::endl;
+
 					if (BMID[j].location == IBD[i].begin)
 						{
 							st = BMID[j].lineno;
@@ -630,6 +666,7 @@ void Compute::calculate(HandleFlags hf,ReadFiles rf)
 							break;
 						}
 				}
+			//std::cout<<"st = "<<st<<"\t"<<"en = "<<en<<std::endl;
 			std::string tofind = IBD[i].person1;
 			compute_ma_ie(i,st,en,hf.getwindowsize(),atmostdnalength,IBD[i].person1,IBD[i].person2);
 
@@ -644,8 +681,7 @@ void Compute::calculate(HandleFlags hf,ReadFiles rf)
 			std::cout<<"\rPercentage completed:\t"<<	(i/double(IBD.size()))*(100.0) ;
 			std::cout.flush();
 		}
-	std::cout<<"\rPercentage completed:\t"<<	(i/double(IBD.size()))*(100.0)<<std::endl;	
+	std::cout<<"\rPercentage completed:\t"<<	(i/double(IBD.size()))*(100.0)<<std::endl;
 	foutfile.close();
 	std::cout<<"Execution completed."<<std::endl;
-
 }
