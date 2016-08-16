@@ -16,6 +16,7 @@ private:
 	static std::string bmidfile;
 	static std::string ibdfile;
 	static std::string outfile;
+	static double trim;
 	static int windowsize;
 
 public:
@@ -26,6 +27,7 @@ public:
 	std::string getbmidfilename();	//	view bmidfilename
 	std::string getibdfilename();	//	view ibdfilename
 	std::string getoutputfilename();
+	double gettrimvalue();			// get the trim flag value
 	int getwindowsize();
 };
 

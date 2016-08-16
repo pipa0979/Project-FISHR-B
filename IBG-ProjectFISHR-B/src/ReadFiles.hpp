@@ -20,10 +20,6 @@ public:
 	int readpedfile(std::string);
 	int readibdfile(std::string);
 	int readbmidfile(std::string);
-
-
-
-
 };
 
 

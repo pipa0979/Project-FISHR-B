@@ -8,6 +8,8 @@
 #include <iostream>
 #include <sstream>
 #include <math.h>
+#include <vector>
+#include <numeric>
 #include <stdio.h>
 #include "Compute.hpp"
 
@@ -27,6 +29,8 @@ Compute::Compute(HandleFlags hf,ReadFiles rf)
 	start = stop = 0;	//	initializing the start and stop to 0
 	ind1.clear();	// clear all data from vector type  for ind1
 	ind2.clear();	// clear all data from vector type  for ind1
+	ie.clear();	//clear all data from the vector that holds sequence of ma_ie
+	trim_ie.clear();	// clear all data from the vector type for trim_ie
 
 	firstpass(hf.getibdfilename(),hf.getbmidfilename());	//create a new IBDfile with the length of chromosome to be matched.
 
@@ -34,6 +38,7 @@ Compute::Compute(HandleFlags hf,ReadFiles rf)
 	convertBmidtovec();
 	convertPedtovec();
 	//std::cout<<hf.getwindowsize()<<std::endl;
+	nomatchestrim = false;// if there are no matches in trim function
 
 
 }
@@ -70,6 +75,10 @@ void Compute::convertIBDtovec(std::string ibdfn)
 	{
 
 	}
+
+
+
+
 	//std::cout<<IBD.size()<<std::endl;
 
 	/*for (unsigned long long i = 0;i<IBD.size();i++)
@@ -194,7 +203,7 @@ void Compute::firstpass(std::string ibdfilename,std::string bmidfilename)
 					ssbmid<<linebmid;
 					ssbmid>>placeholderstringbmid>>placeholderstringbmid>>placeholderstringbmid;
 					ssbmid>>placeholderIndexbmid;
-					if (	(placeholderIndexbmid >= placeholderStartibd ))
+					if (( placeholderIndexbmid >= placeholderStartibd ))
 						{
 							if (placeholderStopibd < placeholderIndexbmid )
 								{
@@ -334,9 +343,9 @@ void Compute::compute_ma_ie(unsigned long long index,unsigned long long st,unsig
 				flag21	=	false;
 			if (!((PED[pedind1].dnasequence[j+1] == PED[pedind2].dnasequence[j+1])	&&	flag22))
 				flag22	=	false;
-			if (((flag11 == false)	&&	(flag12 == false)	&&	(flag21 == false)	&&	(flag22 == false))		|| (j	==	(stop)))
+			if (((flag11 == false)	&&	(flag12 == false)	&&	(flag21 == false)	&&	(flag22 == false))	|| (j	==	(stop)))
 				{
-					if (j == (stop))	// if last elemment is not marked as error, mark it, else leave it.
+					if (j == (stop))	// if last element is not marked as error, mark it, else leave it.
 						{
 							if ( !(j == verr[verr.size()-1]))
 								verr.push_back(j);
@@ -384,11 +393,15 @@ void Compute::compute_ma_ie(unsigned long long index,unsigned long long st,unsig
 				{
 					foutfile<<"/";
 					foutfile<<error_ie/winsize;
+					ie.push_back(error_ie/winsize);	//contains the sequence for ma_ie pushing  into the trim vector for later calculation for  pie_trim, left, right, trim_ie
+					//std::cout<<error_ie/winsize<<std::endl;
 					error_ie = 0.0;
 				}
 			else
 				{
 					foutfile<<error_ie/winsize;
+					ie.push_back(error_ie/winsize);//contains the sequence for ma_ie pushing  into the trim vector for later calculation for  pie_trim, left, right, trim_ie
+					//std::cout<<error_ie/winsize<<std::endl;
 					error_ie = 0.0;
 				}
 
@@ -397,8 +410,6 @@ void Compute::compute_ma_ie(unsigned long long index,unsigned long long st,unsig
 
 		}
 		foutfile<<"\t";
-
-
 }
 
 
@@ -529,6 +540,16 @@ void Compute::compute_ma_nm(unsigned long long index,unsigned long long st,unsig
 			//exit(0);
 }
 
+/*
+void compute_mate_het()
+{
+	for (unsigned int int  i=0 ; i< index;i++	)
+	{
+		int x = std::max(SH-L,ROH-L)<<std::min(SH-R);
+	}
+}
+*/
+
 
 void Compute::compute_ma_het(unsigned long long index,unsigned long long st,unsigned long long en,int winsize,unsigned long long atmostdnalength,std::string tofind )
 {
@@ -542,7 +563,6 @@ void Compute::compute_ma_het(unsigned long long index,unsigned long long st,unsi
 
 	for (unsigned long long i=0;i< PED.size();i++ )
 		{
-
 			if (strcmp(PED[i].individual.c_str(), tofind.c_str()) == 0)
 				{
 					//std::cout<<PED[i].dnasequence<<std::endl;
@@ -640,10 +660,104 @@ void Compute::compute_ma_het(unsigned long long index,unsigned long long st,unsi
 }
 
 
+void Compute::compute_pie_trim()	//uses only trim_ie vector, don't clear the vector values since we need to calculate 3 more columns i.e. left right and trim_ie
+{
+if (nomatchestrim == false)
+{
+foutfile<<"\t";
+for(std::vector<double>::iterator it = trim_ie.begin(); it != trim_ie.end(); ++it)
+	{
+		foutfile<<(*it);
+		if (	(it+1) != trim_ie.end()		)
+		{
+			foutfile<<"/";
+		}
+	}//end for
+}//end if
+else
+{
+	foutfile<<"\t";
+	foutfile<<"NA";
+}
+}
+
+void Compute::compute_trim_ie(double trim)	// print its value in compute_pie_trim to conform the order of output
+{
+	len_left = 0;	//To compute the left of column 4 of map; how many past the ma_ie did the trim start
+	len_right = 0;	//To compute the left of column 4 of map; how many past the ma_ie did the trim end, it tells us how many contigeous matches is happening
+	bool cstart = false;	//continuous sequence start
+	for(std::vector<double>::iterator it = ie.begin(); it != ie.end(); ++it)
+	{
+	    /* std::cout << *it; ... */
+		if ((*it) <= trim)
+		{
+			cstart = true;
+			trim_ie.push_back(*it);	//empty trim_ie and ie in the for loop in calculate function
+			len_right++;
+		}
+		else	//(*it) > trim
+		{
+			if (cstart == true)	// this is scalable
+			{
+				break;
+			}
+			len_left++;
+		}
+	}//end for loop
+
+	//print compute trim of trim_ie i.e. PIE_TRIM
+
+	if (len_right != 0)
+		nomatchestrim = false;
+	else
+		nomatchestrim = true;
+
+	if (nomatchestrim == false)
+	{
+		foutfile<<"\t";
+		foutfile<<std::accumulate( trim_ie.begin(), trim_ie.end(), 0.0)/trim_ie.size();	//accumulate used numeric.h
+	}
+	else
+	{
+		foutfile<<"\t";
+		foutfile<<"NA";
+	}
+
+}
+
+
+
+void Compute::compute_left_right(unsigned long long st, unsigned long long en)
+{
+
+if (nomatchestrim == false)
+{
+	foutfile<<"\t";
+	foutfile<<BMID[st+len_left].location;
+	foutfile<<"\t";
+	foutfile<<BMID[st+len_left+len_right-1].location;
+}
+else
+{
+	foutfile<<"\t";
+	foutfile<<"NA";
+	foutfile<<"\t";
+	foutfile<<"NA";
+}
+}
+
 void Compute::calculate(HandleFlags hf,ReadFiles rf)
 {
 	std::cout<<"Computing..."<<std::endl;
 	unsigned long long atmostdnalength = (PED[0].dnasequence.length() - 1)/2;	//Length of the dna sequence
+
+	//sentinent check
+	if (atmostdnalength!= BMID.size())
+		{
+			std::cerr<<"Length of DNA sequence mismatches the bmid file...exiting"<<std::endl;
+			exit(0);
+		}
+
 	unsigned long long i = 0;
 	for (i = 0; i< IBD.size();i++ )
 		{
@@ -658,7 +772,7 @@ void Compute::calculate(HandleFlags hf,ReadFiles rf)
 
 					if (BMID[j].location == IBD[i].begin)
 						{
-							st = BMID[j].lineno;
+							st = BMID[j].lineno;		//st is the line number of the bmid file assuming ofcourse the line number begins at 0 instead of 1
 						}
 					if (BMID[j].location == IBD[i].end)
 						{
@@ -666,6 +780,7 @@ void Compute::calculate(HandleFlags hf,ReadFiles rf)
 							break;
 						}
 				}
+
 			//std::cout<<"st = "<<st<<"\t"<<"en = "<<en<<std::endl;
 			std::string tofind = IBD[i].person1;
 			compute_ma_ie(i,st,en,hf.getwindowsize(),atmostdnalength,IBD[i].person1,IBD[i].person2);
@@ -673,9 +788,16 @@ void Compute::calculate(HandleFlags hf,ReadFiles rf)
 			compute_ma_het(i,st,en,hf.getwindowsize(),atmostdnalength,tofind);	//het1
 			tofind = IBD[i].person2;
 			compute_ma_het(i,st,en,hf.getwindowsize(),atmostdnalength,tofind);	//het2
-
 			compute_ma_nm(i,st,en,hf.getwindowsize(),atmostdnalength,IBD[i].person1,IBD[i].person2);	//compute ma_nm
-			//compute_ma_ie(i,st,en,hf.getwindowsize(),atmostdnalength,IBD[i].person1,IBD[i].person2);
+
+			compute_trim_ie(hf.gettrimvalue());	//compute the trimming with the trim flag
+			compute_left_right(st,en);
+			compute_pie_trim();
+			nomatchestrim = false;
+			len_left = 0;	//reinitialize to 0
+			len_right = 0;	//reinitialize to 0
+			ie.clear();
+			trim_ie.clear();
 			foutfile.flush();
 			foutfile<<"\n";
 			std::cout<<"\rPercentage completed:\t"<<	(i/double(IBD.size()))*(100.0) ;

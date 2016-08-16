@@ -11,7 +11,6 @@
 #include <vector>
 #include <string>
 #include <cstring>
-
 #include <boost/tokenizer.hpp>
 #include "HandleFlags.hpp"
 #include "ReadFiles.hpp"
@@ -31,6 +30,13 @@ private:
 	std::vector<std::string> ind1;	//	From ped file
 	std::vector<std::string> ind2;	//	From ped file
 
+	std::vector<double> ie;	//contain the elemets for ie
+	std::vector<double> trim_ie;	//contain the elemets for ie
+
+	unsigned long long len_left;	//To compute the left of column 4 of map
+	unsigned long long len_right;	//To compute the right of column 4 of map
+
+	bool nomatchestrim;
 	std::vector <Ibd> IBD;
 	std::vector <Bmid> BMID;
 	std::vector <Ped> PED;
@@ -44,12 +50,15 @@ public:
 	void compute_ma_ie(unsigned long long,unsigned long long,unsigned long long,int,unsigned long long,std::string,std::string);
 	void compute_ma_nm(unsigned long long,unsigned long long,unsigned long long,int,unsigned long long,std::string,std::string);
 	void compute_ma_het(unsigned long long,unsigned long long,unsigned long long,int,unsigned long long,std::string );
+	void compute_pie_trim();
+	void compute_trim_ie(double trim);
+	void compute_left_right(unsigned long long,	unsigned long long );
+
+
+
 	void convertIBDtovec(std::string);
 	void convertBmidtovec();
 	void convertPedtovec();
-
-
-
 };
 
 

@@ -12,10 +12,11 @@
 
 // Defintion for the static variable
 //	http://stackoverflow.com/questions/37553581/assign-value-to-private-static-variable-in-a-class
-std::string  HandleFlags::pedfile;
-std::string  HandleFlags::bmidfile;
-std::string  HandleFlags::ibdfile;
+std::string HandleFlags::pedfile;
+std::string HandleFlags::bmidfile;
+std::string HandleFlags::ibdfile;
 std::string HandleFlags::outfile;
+double HandleFlags::trim;
 int HandleFlags::windowsize;
 
 HandleFlags::HandleFlags(){
@@ -51,21 +52,22 @@ int HandleFlags::setFlagValues(int argc,char *argv[]){
 					winflag = true;
 					}
 				else if (strcmp("-out",argv[i]) == 0)
-				{
+					{
 					outfile = argv[++i];
 					outflag = true;
-				}
+					}
+				else if (strcmp("-trim",argv[i]) == 0)
+					{
+					trim = atof(argv[++i]);
+					}
 				else
 					{
-						std::cerr<<"Wrong parameter encountered:\t"<<argv[i]<<std::endl;
-						return 1;
+					std::cerr<<"Wrong parameter encountered:\t"<<argv[i]<<std::endl;
+					return 1;
 					}
-
-
-
 			}
 
-		if (	!(pedflag && bmidflag	&& ibdflag  &&  winflag  &&  outflag)	)
+		if (!(pedflag	&&	bmidflag	&&	ibdflag  &&  winflag  &&  outflag	&&	trim))
 		{
 			std::cerr<<"flag missing.. Program is exiting";
 			exit(0);
@@ -83,21 +85,25 @@ void HandleFlags::displayFlagValues()
 
 std::string HandleFlags::getpedfilename()
 {
-		return pedfile;
+	return pedfile;
 }
 
 std::string HandleFlags::getbmidfilename()
 {
-		return bmidfile;
+	return bmidfile;
 }
 
 std::string HandleFlags::getibdfilename()
 {
-		return ibdfile;
+	return ibdfile;
 }
 std::string HandleFlags::getoutputfilename()
 {
-		return outfile;
+	return outfile;
+}
+double HandleFlags::gettrimvalue()
+{
+	return trim;
 }
 
 int HandleFlags::getwindowsize()
