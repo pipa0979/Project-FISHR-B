@@ -750,7 +750,7 @@ else
 void Compute::calculate(HandleFlags hf,ReadFiles rf)
 {
 	std::cout<<"Computing..."<<std::endl;
-	unsigned long long atmostdnalength = (PED[0].dnasequence.length() - 1)/2;	//Length of the dna sequence
+	unsigned long long atmostdnalength = (PED[0].dnasequence.length())/2;	//Length of the dna sequence
 
 	//sentinent check
 	if (atmostdnalength!= BMID.size())
