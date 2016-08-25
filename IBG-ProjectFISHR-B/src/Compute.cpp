@@ -139,7 +139,8 @@ void Compute::convertPedtovec()
 			individual = populate.individual;
 			ss>>populate.individual>>populate.individual>>populate.individual>>populate.individual;
 			getline(ss,dnaseq,'\n');
-			dnaseq.erase(			std::remove(dnaseq.begin(), dnaseq.end(), '\t'), dnaseq.end()		);	//Debunk this
+			//dnaseq.erase(			std::remove(dnaseq.begin(), dnaseq.end(), '\t'), dnaseq.end()		);	//Debunk this
+			dnaseq.erase(std::remove_if(dnaseq.begin(), dnaseq.end(), isspace), dnaseq.end());
 			PED.push_back(Ped(individual,dnaseq));
 			ss.str("");
 			ss.clear();
